@@ -57,6 +57,17 @@ const movies = [
       { id: "04", name: "Steve Oedekerk" },
       { id: "05", name: "Lung Fei" }
     ]
+  },
+  {
+    id: "4",
+    title: "One-Armed Swordsman",
+    releaseDate: "1967",
+    rating: 7.4,
+    actors: [
+      { id: "06", name: "Jimmy Wang" },
+      { id: "07", name: "Lisa Chiao Chiao" },
+      { id: "08", name: "Angela Pan" },
+    ]
   }
 ]
 
