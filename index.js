@@ -68,6 +68,16 @@ const movies = [
       { id: "07", name: "Lisa Chiao Chiao" },
       { id: "08", name: "Angela Pan" },
     ]
+  },
+  {
+    id: "5",
+    title: "Test Movie 5",
+    releaseDate: "2005",
+    rating: 7.4,
+    actors: [
+      { id: "09", name: "John Smith" },
+      { id: "10", name: "Jane Johnson" },
+    ]
   }
 ]
 
