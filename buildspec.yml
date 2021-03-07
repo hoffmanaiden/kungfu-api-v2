@@ -15,7 +15,6 @@ phases:
     commands:
       - echo build phase aiden
       - echo build started on `date`
-      - npm test
   post_build:
     commands:
       - echo post_build phase aiden
