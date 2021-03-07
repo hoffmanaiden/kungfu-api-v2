@@ -35,7 +35,12 @@ const movies = [
     id: "1",
     title: "5 Deadly Venoms",
     releaseDate: "1983",
-    rating: 5.5
+    rating: 5.5,
+    actors: [
+      {id: "11", name: "Chiang Sheng"},
+      {id: "12", name: "Sun Chien"},
+      {id: "13", name: "Philip Kwok"},
+    ],
   },
   {
     id: "2",
