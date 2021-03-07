@@ -1,0 +1,25 @@
+version: 0.2
+
+phases:
+  install:
+    runtime-versions:
+      nodejs: 14
+    commands:
+      - echo install phase aiden
+      - echo installing npm dependencies...
+      - npm install
+  pre_build:
+    commands:
+      - echo pre_build phase aiden
+  build:
+    commands:
+      - echo build phase aiden
+      - echo build started on `date`
+      - npm test
+  post_build:
+    commands:
+      - echo post_build phase aiden
+      - echo build completed on `date`
+artifacts:
+  files:
+    - "**/*"
