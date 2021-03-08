@@ -48,6 +48,7 @@ const actors = [
   {id: "11", name: "Chiang Sheng"},
   {id: "12", name: "Sun Chien"},
   {id: "13", name: "Philip Kwok"},
+  {id: "14", name: "Aiden Hoffman"},
 ]
 
 const movies = [
@@ -96,12 +97,13 @@ const movies = [
   },
   {
     id: "5",
-    title: "Test Movie 5",
+    title: "Best Movie Ever!",
     releaseDate: new Date("6-1-2005"),
     rating: 7.4,
     actors: [
       { id: "09"},
       { id: "10"},
+      { id: "14"},
     ]
   }
 ]
