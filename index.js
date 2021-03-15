@@ -1,6 +1,16 @@
 const { ApolloServer, gql } = require('apollo-server');
 const { GraphQLScalarType } = require('graphql')
 const { Kind } = require('graphql/language')
+var AWS = require("aws-sdk")
+
+AWS.config.update({
+  region: "us-east-1",
+  endpoint: "http://localhost:8000"
+});
+
+var docClient = new AWS.DynamoDB.DocumentClient();
+
+
 
 // left off
 
@@ -30,6 +40,20 @@ const typeDefs = gql`
     movies: [Movie],
     movie(id: ID): Movie,
   }
+  input ActorInput {
+    id: ID
+    name: String
+  }
+  input MovieInput {
+    id: ID
+    title: String
+    releaseDate: Date
+    rating: Float
+    actors: [ActorInput]
+  }
+  type Mutation {
+    addMovie(movie: MovieInput): [Movie]
+  }
 `;
 
 
@@ -49,6 +73,7 @@ const actors = [
   {id: "12", name: "Sun Chien"},
   {id: "13", name: "Philip Kwok"},
   {id: "14", name: "Aiden Hoffman"},
+  {id: "15", name: "butthead"}
 ]
 
 const movies = [
@@ -108,6 +133,21 @@ const movies = [
   }
 ]
 
+function getFromDB(err, data){
+  if(err){
+    console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
+  } else {
+    console.log("GetItem succeeded:", JSON.stringify(data, null, 2))
+  }
+}
+function putInDB(err, data){
+  if(err){
+    console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
+  } else {
+    console.log("Added item:", JSON.stringify(data, null, 2))
+  }
+}
+
 // ---------------------------- Resolvers - query responders?
 const resolvers = {
   Query: {
@@ -138,6 +178,15 @@ const resolvers = {
 
       // for each movie return the filtered array of actors
       return filteredActors
+    }
+  },
+  Mutation: {
+    addMovie: (obj, {movie}, context, info) => { 
+      const newMoviesList = [
+        ...movies,
+        movie
+      ]
+      return newMoviesList;
     }
   },
   Date: new GraphQLScalarType({
