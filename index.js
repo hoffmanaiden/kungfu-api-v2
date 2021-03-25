@@ -69,11 +69,11 @@ const actors = [
   { id: "08", name: "Angela Pan" },
   { id: "09", name: "John Smith" },
   { id: "10", name: "Jane Johnson" },
-  {id: "11", name: "Chiang Sheng"},
-  {id: "12", name: "Sun Chien"},
-  {id: "13", name: "Philip Kwok"},
-  {id: "14", name: "Aiden Hoffman"},
-  {id: "15", name: "butthead"}
+  { id: "11", name: "Chiang Sheng" },
+  { id: "12", name: "Sun Chien" },
+  { id: "13", name: "Philip Kwok" },
+  { id: "14", name: "Aiden Hoffman" },
+  { id: "15", name: "butthead" }
 ]
 
 const movies = [
@@ -83,9 +83,9 @@ const movies = [
     releaseDate: new Date("10-12-1983"),
     rating: 5.5,
     actors: [
-      {id: "11"},
-      {id: "12"},
-      {id: "13"},
+      { id: "11" },
+      { id: "12" },
+      { id: "13" },
     ],
   },
   {
@@ -94,9 +94,9 @@ const movies = [
     releaseDate: new Date("10-10-1978"),
     rating: 9.5,
     actors: [
-      { id: "01"},
-      { id: "02"},
-      { id: "03"},
+      { id: "01" },
+      { id: "02" },
+      { id: "03" },
     ],
   },
   {
@@ -105,8 +105,8 @@ const movies = [
     releaseDate: new Date("6-1-2002"),
     rating: 9.9,
     actors: [
-      { id: "04"},
-      { id: "05"}
+      { id: "04" },
+      { id: "05" }
     ]
   },
   {
@@ -115,9 +115,9 @@ const movies = [
     releaseDate: new Date("6-1-1967"),
     rating: 7.4,
     actors: [
-      { id: "06"},
-      { id: "07"},
-      { id: "08"},
+      { id: "06" },
+      { id: "07" },
+      { id: "08" },
     ]
   },
   {
@@ -126,22 +126,22 @@ const movies = [
     releaseDate: new Date("6-1-2005"),
     rating: 7.4,
     actors: [
-      { id: "09"},
-      { id: "10"},
-      { id: "14"},
+      { id: "09" },
+      { id: "10" },
+      { id: "14" },
     ]
   }
 ]
 
-function getFromDB(err, data){
-  if(err){
+function getFromDB(err, data) {
+  if (err) {
     console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
   } else {
     console.log("GetItem succeeded:", JSON.stringify(data, null, 2))
   }
 }
-function putInDB(err, data){
-  if(err){
+function putInDB(err, data) {
+  if (err) {
     console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
   } else {
     console.log("Added item:", JSON.stringify(data, null, 2))
@@ -181,7 +181,7 @@ const resolvers = {
     }
   },
   Mutation: {
-    addMovie: (obj, {movie}, context, info) => { 
+    addMovie: (obj, { movie }, context, info) => {
       const newMoviesList = [
         ...movies,
         movie
@@ -192,16 +192,16 @@ const resolvers = {
   Date: new GraphQLScalarType({
     name: "Date",
     description: "defining a date object",
-    parseValue(value){
+    parseValue(value) {
       // incoming value from the client
       return new Date(value)
     },
-    serialize(value){
+    serialize(value) {
       // outgoing value to the client
-      return value.getTime(); 
+      return value.getTime();
     },
-    parseLiteral(ast){
-      if(ast.kind === Kind.INT){
+    parseLiteral(ast) {
+      if (ast.kind === Kind.INT) {
         return new Date(ast.value)
       }
       return null
@@ -210,9 +210,9 @@ const resolvers = {
 }
 
 // ------------------------------------------------------------------ APOLLO SERVER
-const server = new ApolloServer({ 
-  typeDefs, 
-  resolvers, 
+const server = new ApolloServer({
+  typeDefs,
+  resolvers,
   introspection: true, // for dev only
   playground: true // for dev only
 });
