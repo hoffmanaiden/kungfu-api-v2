@@ -182,6 +182,7 @@ const resolvers = {
   },
   Mutation: {
     addMovie: (obj, { movie }, context, info) => {
+      console.log(context)
       const newMoviesList = [
         ...movies,
         movie
@@ -214,7 +215,15 @@ const server = new ApolloServer({
   typeDefs,
   resolvers,
   introspection: true, // for dev only
-  playground: true // for dev only
+  playground: true, // for dev only
+  context: ({req}) => {
+    const fakeUser = {
+      userId: "helloImAUser"
+    };
+    return {
+      ...fakeUser
+    }
+  }
 });
 
 server.listen({
