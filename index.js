@@ -1,21 +1,31 @@
 const { ApolloServer, gql } = require('apollo-server');
 const { GraphQLScalarType } = require('graphql')
 const { Kind } = require('graphql/language')
-var AWS = require("aws-sdk")
+require('dotenv').config();
+const mongoose = require('mongoose');
 
-AWS.config.update({
-  region: "us-east-1",
-  endpoint: "http://localhost:8000"
+
+mongoose.connect(
+  `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.cb67g.mongodb.net/myFirstDatabase?retryWrites=true&w=majority`,
+  { useNewUrlParser: true, useUnifiedTopology: true }
+);
+const db = mongoose.connection;
+
+// ----------------------------- Mongo Schema
+const movieSchema = new mongoose.Schema({
+  title: String,
+  releaseDate: Date,
+  rating: Number,
+  status: String,
+  actorIds: [String]
 });
 
-var docClient = new AWS.DynamoDB.DocumentClient();
+const Movie = mongoose.model('Movie', movieSchema);
 
 
-
-// left off
-
-// ----------------------------- Schema
+// ----------------------------- GraphQL Schema
 const typeDefs = gql`
+
   scalar Date
 
   enum Status {
@@ -133,34 +143,31 @@ const movies = [
   }
 ]
 
-function getFromDB(err, data) {
-  if (err) {
-    console.error("Unable to read item. Error JSON:", JSON.stringify(err, null, 2));
-  } else {
-    console.log("GetItem succeeded:", JSON.stringify(data, null, 2))
-  }
-}
-function putInDB(err, data) {
-  if (err) {
-    console.error("Unable to add item. Error JSON:", JSON.stringify(err, null, 2));
-  } else {
-    console.log("Added item:", JSON.stringify(data, null, 2))
-  }
-}
 
 // ---------------------------- Resolvers - query responders?
 const resolvers = {
   Query: {
     // Query movies, return the array of movies
     // but specify what fields to return within movies[]
-    movies: () => {
-      return movies;
+    movies: async () => {
+      try{
+        const allMovies = await Movie.find();
+        return allMovies;
+      } catch(err){
+        console.log('err', err);
+        return []
+      }
     },
     // Query movie, return a movie object
     // but specify what fields to return within that movie
-    movie: (obj, args, context, info) => {
-      const foundMovie = movies.find((movie) => movie.id === args.id)
-      return foundMovie
+    movie: async (obj, args, context, info) => {
+      try{
+        const foundMovie = await Movie.findById(args.id)
+        return foundMovie
+      } catch(err){
+        console.log('err', err);
+        return {}
+      }
     },
   },
   Movie: {
@@ -181,13 +188,18 @@ const resolvers = {
     }
   },
   Mutation: {
-    addMovie: (obj, { movie }, context, info) => {
-      console.log(context)
-      const newMoviesList = [
-        ...movies,
-        movie
-      ]
-      return newMoviesList;
+    addMovie: async (obj, { movie }, context, info) => {
+      try{
+        await Movie.create({
+          ...movie
+        })
+        const allMovies = await Movie.find();
+        // return [newMovie];
+        return allMovies
+      } catch(e){
+        console.log('error', e);
+        return []
+      }
     }
   },
   Date: new GraphQLScalarType({
@@ -216,7 +228,7 @@ const server = new ApolloServer({
   resolvers,
   introspection: true, // for dev only
   playground: true, // for dev only
-  context: ({req}) => {
+  context: ({ req }) => {
     const fakeUser = {
       userId: "helloImAUser"
     };
@@ -226,8 +238,14 @@ const server = new ApolloServer({
   }
 });
 
-server.listen({
-  port: process.env.PORT || 4000
-}).then(({ url }) => {
-  console.log(`Server running on ${url}`)
+
+db.on('error', console.error.bind(console, 'connection error:'));
+db.once('open', function () {
+  console.log('MongoDB connected!')
+  server.listen({
+    port: process.env.PORT || 4000
+  }).then(({ url }) => {
+    console.log(`Server running on ${url}`)
+  });
 });
+
